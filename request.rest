@@ -1,0 +1,73 @@
+GET http://localhost:5000/
+
+
+### Get all student
+GET http://localhost:5000/api/student
+
+
+### Add student
+POST http://localhost:5000/api/student/register
+Content-Type: application/json
+
+{
+    "fullName": "Yash Porwal",
+    "Rollno": "18etccs001",
+    "email": "18etccs001@technonjr.org",
+    "password": "password"
+}
+
+
+### Login student
+POST http://localhost:5000/api/student/login
+Content-Type: application/json
+
+{
+    "email": "18etccs001@technonjr.org",
+    "password": "password"
+}
+
+### Get all teachers
+GET http://localhost:5000/api/teacher
+
+
+### Add teacher
+POST http://localhost:5000/api/teacher/register
+Content-Type: application/json
+
+{
+    "fullName": "GK",
+    "subject": "Java",
+    "email": "gk@technonjr.org",
+    "password": "password"
+}
+
+
+### Login teacher
+POST http://localhost:5000/api/teacher/login
+Content-Type: application/json
+
+{
+    "email": "gk@technonjr.org",
+    "password": "password"
+}
+
+
+### Add admin
+POST http://localhost:5000/api/admin/register
+Content-Type: application/json
+
+{
+    "fullName": "director",
+    "email": "director@technonjr.org",
+    "password": "password"
+}
+
+
+### Login teacher
+POST http://localhost:5000/api/admin/login
+Content-Type: application/json
+
+{
+    "email": "director@technonjr.org",
+    "password": "password"
+}
