@@ -6,9 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>Attendance</title>
         <link href="css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -55,10 +57,13 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">Class Name</h1>
+                        <h1 class="mt-4">3<sup>rd</sup> year CS-IT</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Subject Name</li>
+                            <li class="breadcrumb-item active">JAVA</li>
+                            
+
                         </ol>
+                       
                         <div class="row">
                             
                                 <div class="card-body">
@@ -82,28 +87,14 @@
                                             <!--Table body-->
         
                                             <tbody class="attendance">
-                                                <tr>
-                                                    <th scope="row">1<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
-                                                    <td>Yash Porwal</td>
-                                                    <td>18etccs073</td>
-                                                    <td><div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="defaultUnchecked" name="defaultExampleRadios"checked>
-                                                        <label class="custom-control-label" for="defaultUnchecked">Present</label>
-                                                      </div>
-                                                      
-                                                      
-                                                      <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios" >
-                                                        <label class="custom-control-label" for="defaultChecked">Absent</label>
-                                                      </div>
-                                                    </td>
-                                                    </tr>
+                                                
         
         
                                             </tbody>
                                             <!--Table body-->
                                         </table>
                                         <!--Table-->
+                                        <button type="button" class="btn btn-success" onclick="setAttendance();">Confirm</button>
                                 </div>
                             
                         </div>
@@ -128,11 +119,100 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/chart-area-demo.js"></script>
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
+        
+        <script>
+          
+            $(document).ready(() => {
+                getStudents()
+                setInterval(() => {
+                    getStudents()
+                }, 100000000)
+
+            })
+            const getStudents = async () => {
+                let result = await fetch('http://localhost:5000/api/student', {
+                    
+                })
+                result = await result.json()
+                
+                const fetchedStudents = result.users
+                let element
+                let c = 1
+                for (let i = fetchedStudents.length - 1; i >= 0; i--) {
+                    
+                    let e = `<tr>
+                                <th scope="row">${c}<input type='text' hidden='true' value='${fetchedStudents[i]._id}'></th>
+                                <td>${fetchedStudents[i].fullName}</td>
+                                <td>${fetchedStudents[i].Rollno}</td>
+                                <td><div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="present${fetchedStudents[i]._id}" value="Present" name="defaultExampleRadios${fetchedStudents[i]._id}"checked>
+                                    <label class="custom-control-label" for="present${fetchedStudents[i]._id}">Present</label>
+                                    </div>
+                                    
+                                    
+                                    <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="absent${fetchedStudents[i]._id}" value="Absent" name="defaultExampleRadios${fetchedStudents[i]._id}" >
+                                    <label class="custom-control-label" for="absent${fetchedStudents[i]._id}">Absent</label>
+                                    </div>
+                                </td>
+                                </tr>`
+                    element = element + e
+                    c++
+                }
+                $('.attendance').empty()
+                $('.attendance').append(element)
+                ogComplaints = element
+            }
+
+
+
+
+            const setAttendance = async () => {
+                let result = await fetch('http://localhost:5000/api/student', {
+                    
+                })
+                result = await result.json()
+                
+                const fetchedStudents = result.users
+                let element
+                let c = 0
+                let attendance=[]
+                for (let i = fetchedStudents.length - 1; i >= 0; i--) {
+                    let st
+                    let c = $(`input[name="defaultExampleRadios${fetchedStudents[i]._id}"]:checked`).val();
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    var yyyy = today.getFullYear();
+                    console.log(c)
+                    today = dd + '/' + mm + '/' + yyyy;
+                    switch (c) {
+                        case 'Present':
+                            st = '1';
+                            break;
+                        case 'Absent':
+                            st = '0';
+                            break;
+                    }
+                    let obj ={
+                            "Rollno" : fetchedStudents[i].Rollno,
+                            "subject":"JAVA",
+                            "date" : today,
+                            "status": st
+                            }
+                    
+                    attendance.push(obj)
+                    c++
+                }
+                console.log(attendance)
+            }
+        </script>
     </body>
 </html>

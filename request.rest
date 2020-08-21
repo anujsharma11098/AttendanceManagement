@@ -10,9 +10,9 @@ POST http://localhost:5000/api/student/register
 Content-Type: application/json
 
 {
-    "fullName": "Yash Porwal",
-    "Rollno": "18etccs001",
-    "email": "18etccs001@technonjr.org",
+    "fullName": "Anuj Sharma",
+    "Rollno": "18etccs002",
+    "email": "18etccs002@technonjr.org",
     "password": "password"
 }
 
@@ -22,7 +22,7 @@ POST http://localhost:5000/api/student/login
 Content-Type: application/json
 
 {
-    "email": "18etccs001@technonjr.org",
+    "email": "18etccs002@technonjr.org",
     "password": "password"
 }
 
