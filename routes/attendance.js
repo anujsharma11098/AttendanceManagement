@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     console.log(req.body)
     try {
         await Attendance.create({
-            Rollno, subject, date, status: 0
+            Rollno, subject, date, status
         })
         res.status(201).json({ status: 201, message: 'Attendance Registered Successfully!' })
     } catch (err) {

@@ -199,6 +199,20 @@
                     c++
                 }
                 console.log(attendance)
+
+
+                for (let i = attendance.length - 1; i >= 0; i--) {
+                    let result = await fetch('http://localhost:5000/api/attendance', {
+                    method :"POST",
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(attendance[i])
+                })
+                const json = await result.json()
+                console.log(json)
+                }
+
             }
         </script>
     </body>
