@@ -49,4 +49,22 @@ router.post('/login', async (req, res) => {
     res.json({ status: 200, token: accessToken })
 })
 
+
+
+router.delete('/:id', async (req, res) => {
+    if (!req.body.reason)
+        return res.status(400).json({ status: 400, message: 'Reason is required' })
+    try {
+        const user = await User.findOne({ _id: req.params.id })
+        if (!user)
+            return res.status(404).json({ status: 404, message: 'User not found' })
+        await user.remove()
+        res.json({ status: 200, message: 'Deleted Successfully' })
+    } catch (err) {
+        if (err.message.includes('Cast to ObjectId failed for value'))
+            return res.status(404).json({ status: 404, message: 'User not found' })
+        console.log(err)
+        res.status(500).json({ status: 500, message: 'Internal Server Error' })
+    }
+})
 module.exports = router
