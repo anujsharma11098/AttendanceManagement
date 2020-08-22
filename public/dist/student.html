@@ -57,9 +57,9 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">3<sup>rd</sup> Year CS-IT</h1>
+                        <h1 class="mt-4" id="roll"></h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">JAVA</li>
+                            <li class="breadcrumb-item active">Attendance per subject</li>
                             
 
                         </ol>
@@ -77,9 +77,8 @@
                                             <thead class="mdb-color darken-3">
                                                 <tr class="text-black">
                                                     <th>Sr. No.</th>
-                                                    <th>Full Name</th>
-                                                    <th>Roll No.</th>
-                                                    <th>Status</th>
+                                                    <th>Subject</th>
+                                                    <th>Percentage</th>
                                                 </tr>
                                             </thead>
                                             <!--Table head-->
@@ -93,8 +92,7 @@
                                             <!--Table body-->
                                         </table>
                                         <!--Table-->
-                                        <button type="button" class="btn btn-success" onclick="setAttendance();">Confirm</button>
-                                        <button type="button" class="btn btn-danger" onclick="download1();">Download</button>
+                                        
                                 </div>
                             
                         </div>
@@ -116,6 +114,13 @@
         <script src="assets/demo/datatables-demo.js"></script>
         
         <script>
+            const rollno = localStorage.getItem('rollno')
+            if (rollno) {
+            console.log(rollno)
+            }
+            else {
+            location = '/login_student.html'
+            }
           
             $(document).ready(() => {
                 getStudents()
@@ -124,32 +129,44 @@
                 }, 100000000)
 
             })
+            $('#roll').text(`${rollno}`)
             const getStudents = async () => {
-                let result = await fetch('http://localhost:5000/api/student', {
+                let subjects = await fetch('http://localhost:5000/api/teacher/subject', {
+                    
+                })
+                subjects = await subjects.json()
+                let Nsubjects = subjects.subjects
+                console.log(Nsubjects)
+                let element
+                let c = 1
+                
+                for (let i = Nsubjects.length - 1; i >= 0; i--) {
+                    let obj ={
+                            "Rollno" : rollno,
+                            "subject": Nsubjects
+                    }
+                    let result = await fetch('http://localhost:5000/api/attendance/eachStudent', {
+                    method :"POST",
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(obj)
                     
                 })
                 result = await result.json()
+                console.log(result)
+                let present = result.Present
+                console.log(present)
+                let absent =result.Absent
+                console.log(absent)
+                let total = present+absent
+                let percentage = (present/total)*100
                 
-                const fetchedStudents = result.users
-                let element
-                let c = 1
-                for (let i = fetchedStudents.length - 1; i >= 0; i--) {
-                    
-                    let e = `<tr>
-                                <th scope="row">${c}<input type='text' hidden='true' value='${fetchedStudents[i]._id}'></th>
-                                <td>${fetchedStudents[i].fullName}</td>
-                                <td>${fetchedStudents[i].Rollno}</td>
-                                <td><div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="present${fetchedStudents[i]._id}" value="Present" name="defaultExampleRadios${fetchedStudents[i]._id}"checked>
-                                    <label class="custom-control-label" for="present${fetchedStudents[i]._id}">Present</label>
-                                    </div>
-                                    
-                                    
-                                    <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="absent${fetchedStudents[i]._id}" value="Absent" name="defaultExampleRadios${fetchedStudents[i]._id}" >
-                                    <label class="custom-control-label" for="absent${fetchedStudents[i]._id}">Absent</label>
-                                    </div>
-                                </td>
+                let e = `<tr>
+                                <th scope="row">${c}</th>
+                                <td>${Nsubjects[i]}</td>
+                                <td>${percentage}%</td>
+                                
                                 </tr>`
                     element = element + e
                     c++
@@ -157,68 +174,6 @@
                 $('.attendance').empty()
                 $('.attendance').append(element)
                 ogComplaints = element
-            }
-
-
-
-
-            const setAttendance = async () => {
-                let result = await fetch('http://localhost:5000/api/student', {
-                    
-                })
-                result = await result.json()
-                
-                const fetchedStudents = result.users
-                let element
-                let c = 0
-                let attendance=[]
-                for (let i = fetchedStudents.length - 1; i >= 0; i--) {
-                    let st
-                    let c = $(`input[name="defaultExampleRadios${fetchedStudents[i]._id}"]:checked`).val();
-                    var today = new Date();
-                    var dd = String(today.getDate()).padStart(2, '0');
-                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                    var yyyy = today.getFullYear();
-                    console.log(c)
-                    today = dd + '/' + mm + '/' + yyyy;
-                    switch (c) {
-                        case 'Present':
-                            st = '1';
-                            break;
-                        case 'Absent':
-                            st = '0';
-                            break;
-                    }
-                    let obj ={
-                            "Rollno" : fetchedStudents[i].Rollno,
-                            "subject":"JAVA",
-                            "date" : today,
-                            "status": st
-                            }
-                    
-                    attendance.push(obj)
-                    c++
-                }
-                console.log(attendance)
-                localStorage.setItem('attendance', attendance)
-
-
-                for (let i = attendance.length - 1; i >= 0; i--) {
-                    let result = await fetch('http://localhost:5000/api/attendance', {
-                    method :"POST",
-                    headers : {
-                        'Content-Type' : 'application/json'
-                    },
-                    body : JSON.stringify(attendance[i])
-                })
-                const json = await result.json()
-                console.log(json)
-                }
-
-            }
-
-            function download1(){
-                const attendance = localStorage.getItem('attendance')
             }
         </script>
     </body>

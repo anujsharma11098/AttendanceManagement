@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Get all teachers
-GET http://localhost:5000/api/teacher
+GET http://localhost:5000/api/teacher/subject
 
 
 ### Add teacher
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 {
     "fullName": "GK",
-    "subject": "Java",
+    "subject": "JAVA",
     "email": "gk@technonjr.org",
     "password": "password"
 }
@@ -71,3 +71,16 @@ Content-Type: application/json
     "email": "director@technonjr.org",
     "password": "password"
 }
+
+### Get attendance of student by roll no
+POST  http://localhost:5000/api/attendance/eachStudent
+Content-Type: application/json
+
+{
+    "Rollno":"18etccs001",
+    "subject":"JAVA"
+}
+### Get Attendance
+
+GET http://localhost:5000/api/attendance
+Content-Type: application/json

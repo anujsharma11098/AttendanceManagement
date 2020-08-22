@@ -21,6 +21,36 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/', async (req, res) => {
+    let attendance
+    attendance = await Attendance.aggregate([
+
+         {
+            $sort: {
+                createdAt: -1
+            }
+        }
+    ])
+
+    res.json({ status: 200, attendance })
+})
+
+router.post('/eachStudent', async (req, res) => {
+    
+
+    const particularStudent = await Attendance.find({
+        Rollno: req.body.Rollno,
+        subject: req.body.subject
+    })
+    let Present = particularStudent.filter(e => e.status === 1).length
+    let Absent = particularStudent.filter(e => e.status === 0).length
+    console.log(Present)
+    console.log(Absent)
+
+    res.json({ status: 200, Present,Absent })
+})
+
+
 
 
 module.exports = router

@@ -12,6 +12,10 @@ router.get('/', async (req, res) => {
     const users = await User.find()
     res.json({ status: 200, users })
 })
+router.get('/subject', async (req, res) => {
+    const subjects = await User.distinct("subject")
+    res.json({ status: 200, subjects })
+})
 
 router.post('/register', async (req, res) => {
     const { fullName, subject, email, password } = req.body
