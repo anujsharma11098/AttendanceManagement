@@ -59,7 +59,7 @@
                     <div class="container-fluid">
                         <h1 class="mt-4">3<sup>rd</sup> Year CS-IT</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">JAVA</li>
+                            <li class="breadcrumb-item active sub"></li>
                             
 
                         </ol>
@@ -116,7 +116,14 @@
         <script src="assets/demo/datatables-demo.js"></script>
         
         <script>
-          
+             const subject = localStorage.getItem('subject')
+            if (subject) {
+            console.log(subject)
+            }
+            else {
+            location = '/login_teacher.html'
+            }
+            $('.sub').text(`${subject}`)
             $(document).ready(() => {
                 getStudents()
                 setInterval(() => {
@@ -191,7 +198,7 @@
                     }
                     let obj ={
                             "Rollno" : fetchedStudents[i].Rollno,
-                            "subject":"JAVA",
+                            "subject": subject,
                             "date" : today,
                             "status": st
                             }
@@ -200,7 +207,7 @@
                     c++
                 }
                 console.log(attendance)
-                localStorage.setItem('attendance', attendance)
+                localStorage.setItem('attendance', JSON.stringify(attendance))
 
 
                 for (let i = attendance.length - 1; i >= 0; i--) {
@@ -216,9 +223,41 @@
                 }
 
             }
+            const download =function(data){
+                const blob = new Blob([data],{type:'text/csv'})
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.setAttribute('hidden','')
+                a.setAttribute('href',url)
+                a.setAttribute('download','attendance.csv')
+                document.body.appendChild(a)
+                a.click();
+                document.body.removeChild(a)
 
-            function download1(){
-                const attendance = localStorage.getItem('attendance')
+            }
+            const objectToCsv = function(data){
+                const csvRows =[]
+                const headers =Object.keys(data[0]);
+                csvRows.push(headers.join(','))
+
+                for (const row of data) {
+                    const values = headers.map(header => {
+                        const escaped = (''+row[header]).replace(/"/g, '\\"')
+                        return `"${escaped}"`
+                    })
+                    csvRows.push(values.join(','))
+                }
+                return csvRows.join('\n')
+            }
+            const download1 = async () => {
+                let attendance = JSON.parse(localStorage.getItem("attendance"));
+                
+                const data = attendance.map(row => ({
+                    Rollno : row.Rollno,
+                    status : row.status
+                }));
+                const csvData = objectToCsv(data)
+                download(csvData)
             }
         </script>
     </body>
