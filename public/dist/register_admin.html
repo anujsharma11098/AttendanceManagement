@@ -25,19 +25,19 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label class="small mb-1" for="inputFirstName">Full Name</label>
-                                                        <input class="form-control py-4" id="inputFirstName" type="text" placeholder="Enter Full name" />
+                                                        <input class="form-control py-4" id="fn" type="text" placeholder="Enter Full name" />
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="small mb-1" for="inputEmailAddress">Email</label>
-                                                <input class="form-control py-4" id="inputEmailAddress" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
+                                                <input class="form-control py-4" id="Email" type="email" aria-describedby="emailHelp" placeholder="Enter email address" />
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label class="small mb-1" for="inputPassword">Password</label>
-                                                        <input class="form-control py-4" id="inputPassword" type="password" placeholder="Enter password" />
+                                                        <input class="form-control py-4" id="pass" type="password" placeholder="Enter password" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,5 +71,27 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
+        <script>
+            const register_user = async (e) => {
+      e.preventDefault()
+      let obj = {
+        'fullName': $('#fn').val(),
+        'email': $("#Email").val(),
+        'password': $('#pass').val()
+      }
+      let result = await fetch('http://localhost:5000/api/admin/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+      })
+      const json = await result.json()
+      console.log(json)
+    }
+    $('#form1').submit(register_user)
+
+        </script>
+    </body>
     </body>
 </html>
